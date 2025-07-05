@@ -7,15 +7,20 @@ import { Book, Clock, Rss, User } from 'lucide-react';
 export default async function ComicDetailPage({ params }: { params: { slug: string } }) {
   const comic = await getComicDetail(params.slug);
 
-  // Nếu không tìm thấy truyện, hiển thị trang 404
   if (!comic) {
     return notFound();
   }
 
+  // Domain của CDN chứa ảnh
   const cdnImage = "https://img.otruyenapi.com";
   const chapters = comic.chapters[0]?.server_data || [];
   const firstChapter = chapters[0];
   const latestChapter = chapters[chapters.length - 1];
+
+  // ================================================================
+  // SỬA LỖI Ở ĐÂY: Tạo URL ảnh bìa hoàn chỉnh
+  // ================================================================
+  const imageUrl = `${cdnImage}/uploads/comics/${comic.thumb_url}`;
 
   return (
     <div className="space-y-12">
@@ -24,11 +29,12 @@ export default async function ComicDetailPage({ params }: { params: { slug: stri
         {/* Ảnh bìa */}
         <div className="w-full md:w-1/4 flex-shrink-0">
           <Image
-            src={`${cdnImage}/${comic.thumb_url}`}
+            src={imageUrl} // <-- SỬ DỤNG URL ĐÃ SỬA
             alt={comic.name}
             width={300}
             height={450}
             className="w-full h-auto object-cover rounded-lg shadow-lg"
+            unoptimized={true} // <-- THÊM THUỘC TÍNH NÀY
           />
         </div>
 
@@ -63,12 +69,10 @@ export default async function ComicDetailPage({ params }: { params: { slug: stri
       {/* MÔ TẢ & DANH SÁCH CHƯƠNG */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            {/* Mô tả */}
             <h2 className="text-xl font-bold border-b-2 border-gray-700 pb-2 mb-4">Giới thiệu</h2>
             <div className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: comic.content }} />
         </div>
         <div className="lg:col-span-1">
-            {/* Danh sách chương */}
             <h2 className="text-xl font-bold border-b-2 border-gray-700 pb-2 mb-4">Danh sách chương</h2>
             <div className="max-h-96 overflow-y-auto bg-gray-800/50 p-2 rounded-lg space-y-1">
               {chapters.slice().reverse().map((chap) => {

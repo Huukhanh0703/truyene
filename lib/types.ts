@@ -1,4 +1,19 @@
-// Định nghĩa cấu trúc cho một truyện tranh
+// Định nghĩa cấu trúc cho thông tin phân trang
+export interface Pagination {
+  totalItems: number;
+  totalItemsPerPage: number;
+  currentPage: number;
+  pageRanges: number;
+}
+
+// Định nghĩa cấu trúc cho một Thể loại
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+// Định nghĩa cấu trúc cho một truyện tranh đầy đủ
 export interface Comic {
   _id: string;
   name: string;
@@ -9,14 +24,14 @@ export interface Comic {
   sub_docquyen: boolean;
   author: string[];
   slug: string;
-  category: { id: string; name: string; slug: string }[];
+  category: Category[];
   chapters: {
     server_name: string;
     server_data: ChapterInfo[];
   }[];
 }
 
-// Định nghĩa cấu trúc cho một chương trong danh sách
+// Định nghĩa cấu trúc cho một chương trong danh sách chi tiết
 export interface ChapterInfo {
   filename: string;
   chapter_name: string;
@@ -33,7 +48,7 @@ export interface ComicListItem {
   status: string;
   thumb_url: string;
   sub_docquyen: boolean;
-  category: { id: string; name: string; slug: string }[];
+  category: Category[];
   updatedAt: string;
   chaptersLatest: {
     filename: string;
@@ -41,4 +56,15 @@ export interface ComicListItem {
     chapter_title: string;
     chapter_api_data: string;
   }[];
+}
+
+// Định nghĩa cấu trúc cho dữ liệu một chương truyện
+export interface ChapterData {
+  domain_cdn: string;
+  item: {
+    comic_name: string;
+    chapter_name: string;
+    chapter_path: string;
+    chapter_image: { image_page: number; image_file: string }[];
+  };
 }
