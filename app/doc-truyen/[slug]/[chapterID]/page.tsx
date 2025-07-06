@@ -1,64 +1,83 @@
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { getChapterData, getComicDetail } from '@/lib/api';
-import ReaderControls from '@/components/features/reader/ReaderControls';
+import { getChapter } from "@/lib/api";
+import { Metadata } from "next";
+import Image from "next/image";
+import ReaderControls from "@/components/features/reader/ReaderControls";
+import Link from "next/link";
+import { ChapterData } from "@/lib/types";
 
-// Hàm này sẽ giúp Next.js tạo metadata động cho trang (tốt cho SEO)
-export async function generateMetadata({ params }: { params: { chapterId: string } }) {
-  const chapterData = await getChapterData(params.chapterId);
-  if (!chapterData) {
-    return {
-      title: "Không tìm thấy chương",
+// Sửa lại Props để dùng chapterId (viết thường)
+type Props = {
+    params: { slug: string; chapterId: string };
+};
+
+// Sửa lại để dùng params.chapterId
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const chapterData = await getChapter(params.slug, params.chapterId);
+    if (!chapterData) {
+        return { title: "Lỗi tải chương" };
     }
-  }
-  return {
-    title: `${chapterData.item.comic_name} - ${chapterData.item.chapter_name}`,
-    description: `Đọc truyện ${chapterData.item.comic_name} chương ${chapterData.item.chapter_name} nhanh nhất.`,
-  }
+    return {
+        title: `Đọc ${chapterData.mangaDetail.name} - Chapter ${chapterData.currentChapterName}`,
+    };
 }
 
-// Component chính của trang
-export default async function ReaderPage({ params }: { params: { slug: string; chapterId: string } }) {
-  // Gọi cả hai API cùng lúc để tăng tốc độ
-  const [chapterData, comic] = await Promise.all([
-    getChapterData(params.chapterId),
-    getComicDetail(params.slug)
-  ]);
+// Sửa lại để dùng params.chapterId
+export default async function ReadMangaPage({ params }: Props) {
+    const data = await getChapter(params.slug, params.chapterId);
 
-  // Nếu một trong hai không có dữ liệu, trả về trang 404
-  if (!chapterData || !comic) {
-    return notFound();
-  }
+    if (!data) {
+        return (
+            <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+                <h1 className="text-3xl font-bold text-red-500 mb-4">Lỗi Tải Chương</h1>
+                <p className="text-lg mb-6">Không thể tải được nội dung của chương này. Có thể chương đang được cập nhật hoặc có lỗi xảy ra.</p>
+                <Link href={`/truyen/${params.slug}`} className="text-blue-400 hover:underline text-lg">
+                    Quay về trang chi tiết truyện
+                </Link>
+            </div>
+        );
+    }
 
-  const { domain_cdn, item } = chapterData;
+    const { mangaSlug, mangaDetail, chapterContent, currentChapterName } = data;
+    
+    // Sắp xếp các chương tăng dần để điều hướng 'trước/sau' cho đúng
+    const allChapters: ChapterData[] = mangaDetail.chapters
+        .flatMap(server => server.server_data)
+        .sort((a, b) => parseFloat(a.chapter_name) - parseFloat(b.chapter_name));
 
-  return (
-    <div>
-      <ReaderControls comic={comic} currentChapterId={params.chapterId} />
-
-      <main className="max-w-4xl mx-auto flex flex-col items-center pt-20 pb-10">
-        <h1 className="text-2xl font-bold text-white text-center mb-1 px-4">
-          {comic.name}
-        </h1>
-        <h2 className="text-lg text-gray-300 text-center mb-6">
-          Chapter {item.chapter_name}
-        </h2>
-
-        {/* Hiển thị các trang của chương truyện */}
-        {item.chapter_image.map(image => (
-          <div key={image.image_page} className="w-full">
-            <Image
-              src={`${domain_cdn}/${item.chapter_path}/${image.image_file}`}
-              alt={`Trang ${image.image_page}`}
-              width={800}
-              height={1200}
-              sizes="(max-width: 896px) 100vw, 896px"
-              className="w-full h-auto"
-              priority={image.image_page <= 2} // Ưu tiên tải 2 ảnh đầu tiên
+    return (
+        <div className="bg-gray-900 text-white min-h-screen">
+            <ReaderControls
+                mangaSlug={mangaSlug}
+                currentChapterName={currentChapterName}
+                allChapters={allChapters}
             />
-          </div>
-        ))}
-      </main>
-    </div>
-  );
+            <div className="max-w-4xl mx-auto py-4">
+                {chapterContent.chapter_image.length > 0 ? (
+                    chapterContent.chapter_image.map((image) => (
+                        <div key={image.image_page} className="relative w-full">
+                            <Image
+                                src={image.image_url!} // Thêm '!' để báo rằng URL chắc chắn tồn tại
+                                alt={`Trang ${image.image_page + 1}`}
+                                width={800}
+                                height={1200}
+                                className="w-full h-auto"
+                                unoptimized
+                                priority={image.image_page < 3} // Ưu tiên tải 3 ảnh đầu tiên
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-20">
+                        <p>Nội dung chương đang được cập nhật...</p>
+                    </div>
+                )}
+            </div>
+            {/* Thêm bộ điều khiển ở cuối trang để tiện sử dụng */}
+            <ReaderControls
+                mangaSlug={mangaSlug}
+                currentChapterName={currentChapterName}
+                allChapters={allChapters}
+            />
+        </div>
+    );
 }

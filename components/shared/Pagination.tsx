@@ -1,53 +1,51 @@
 "use client";
 
-import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Pagination as PaginationType } from '@/lib/types';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 interface PaginationProps {
-  pagination: PaginationType;
+    currentPage: number;
+    hasNextPage: boolean;
+    basePath: string;
 }
 
-export default function Pagination({ pagination }: PaginationProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const totalPages = Math.ceil(pagination.totalItems / pagination.totalItemsPerPage);
+export default function Pagination({ currentPage, hasNextPage, basePath }: PaginationProps) {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-  const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', pageNumber.toString());
-    return `${pathname}?${params.toString()}`;
-  };
+    const createPageURL = (pageNumber: number) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', pageNumber.toString());
+        return `${pathname}?${params.toString()}`;
+    };
 
-  if (totalPages <= 1) {
-    return null;
-  }
+    return (
+        <div className="flex justify-center items-center gap-4 mt-8">
+            <Link
+                href={createPageURL(currentPage - 1)}
+                className={`px-4 py-2 border rounded-md text-white ${
+                    currentPage <= 1 ? 'pointer-events-none bg-gray-700 text-gray-400' : 'bg-blue-600 hover:bg-blue-500'
+                }`}
+                aria-disabled={currentPage <= 1}
+                tabIndex={currentPage <= 1 ? -1 : undefined}
+            >
+                Trang trước
+            </Link>
 
-  return (
-    <nav className="flex items-center justify-center gap-4 mt-12 text-white">
-      {/* Nút Previous */}
-      <Link
-        href={createPageURL(currentPage - 1)}
-        className={`flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-md hover:bg-red-600 ${currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}`}
-      >
-        <ChevronLeft size={16} />
-        <span>Trước</span>
-      </Link>
+            <span className="text-white font-semibold">
+                Trang {currentPage}
+            </span>
 
-      <span className="font-semibold">
-        Trang {currentPage} / {totalPages}
-      </span>
-
-      {/* Nút Next */}
-      <Link
-        href={createPageURL(currentPage + 1)}
-        className={`flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-md hover:bg-red-600 ${currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}`}
-      >
-        <span>Sau</span>
-        <ChevronRight size={16} />
-      </Link>
-    </nav>
-  );
+            <Link
+                href={createPageURL(currentPage + 1)}
+                className={`px-4 py-2 border rounded-md text-white ${
+                    !hasNextPage ? 'pointer-events-none bg-gray-700 text-gray-400' : 'bg-blue-600 hover:bg-blue-500'
+                }`}
+                aria-disabled={!hasNextPage}
+                tabIndex={!hasNextPage ? -1 : undefined}
+            >
+                Trang sau
+            </Link>
+        </div>
+    );
 }

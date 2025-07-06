@@ -1,46 +1,58 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { ComicListItem } from '@/lib/types';
+"use client";
 
+import Image from "next/image";
+import Link from "next/link";
+
+/**
+ * Định nghĩa kiểu cho các thuộc tính (props) mà MangaCard nhận vào.
+ * Dữ liệu này đã được xử lý sẵn ở component cha.
+ */
 interface MangaCardProps {
-  comic: ComicListItem;
+    manga: {
+        title: string;
+        slug: string;
+        cover: string;
+        latestChapter: string;
+    };
 }
 
-const MangaCard = ({ comic }: MangaCardProps) => {
-  // Domain của CDN chứa ảnh
-  const cdnImage = "https://img.otruyenapi.com";
-  const latestChapter = comic.chaptersLatest?.[0];
+/**
+ * Component MangaCard dùng để hiển thị thông tin cơ bản của một truyện.
+ * Nó nhận vào một đối tượng manga đã được đơn giản hóa và chỉ việc hiển thị.
+ */
+const MangaCard = ({ manga }: MangaCardProps) => {
+    // Nếu không có prop `manga`, không render gì cả để tránh lỗi
+    if (!manga) {
+        return null;
+    }
 
-  // Tạo URL ảnh hoàn chỉnh bằng cách thêm phần đường dẫn bị thiếu
-  const imageUrl = `${cdnImage}/uploads/comics/${comic.thumb_url}`;
-
-  return (
-    <Link href={`/truyen/${comic.slug}`} className="group block">
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md bg-gray-800">
-        <Image
-          src={imageUrl} // <-- SỬ DỤNG URL ĐÃ ĐƯỢC SỬA ĐÚNG
-          alt={comic.name}
-          fill
-          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 20vw, 15vw"
-          className="object-cover object-center transition-transform duration-300 group-hover:scale-110"
-          // Thêm thuộc tính này để tránh các vấn đề server API chặn Next.js
-          unoptimized={true} 
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        {latestChapter && (
-           <div className="absolute bottom-2 left-2 text-xs font-semibold text-white bg-red-600 px-2 py-1 rounded">
-            Chap {latestChapter.chapter_name}
-           </div>
-        )}
-      </div>
-      <h3 className="mt-2 text-sm font-semibold text-white truncate group-hover:text-red-500">
-        {comic.name}
-      </h3>
-      <p className="mt-1 text-xs text-gray-400">
-        Cập nhật {new Date(comic.updatedAt).toLocaleDateString('vi-VN')}
-      </p>
-    </Link>
-  );
+    return (
+        <Link href={`/truyen/${manga.slug}`} className="group block">
+            {/* Container cho ảnh bìa */}
+            <div className="relative w-full overflow-hidden rounded-md bg-gray-700 aspect-[2/3]">
+                <Image
+                    src={manga.cover}
+                    alt={manga.title}
+                    fill // Lấp đầy container
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16.6vw" // Tối ưu hóa ảnh cho các kích thước màn hình
+                    className="object-cover object-center transition-transform duration-300 group-hover:scale-110"
+                    // Xử lý trong trường hợp ảnh không tải được
+                    onError={(e) => {
+                        e.currentTarget.src = 'https://placehold.co/200x300/1f2937/ffffff?text=Error';
+                    }}
+                />
+            </div>
+            {/* Thông tin truyện */}
+            <div className="mt-2">
+                <h3 className="text-sm font-semibold text-white truncate group-hover:text-blue-400" title={manga.title}>
+                    {manga.title}
+                </h3>
+                <p className="text-xs text-gray-400">
+                    {manga.latestChapter}
+                </p>
+            </div>
+        </Link>
+    );
 };
 
 export default MangaCard;

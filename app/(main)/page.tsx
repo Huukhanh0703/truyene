@@ -1,41 +1,60 @@
-import { getNewComics } from "@/lib/api";
+import { getHome } from "@/lib/api";
 import MangaCard from "@/components/shared/MangaCard";
-import Pagination from "@/components/shared/Pagination";
+import { Manga } from "@/lib/types";
 
-export const dynamic = 'force-dynamic';
+export default async function Home() {
+    const homeData = await getHome();
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  const currentPage = Number(searchParams?.page) || 1;
-  const data = await getNewComics(currentPage);
+    if (!homeData) {
+        return (
+            <div className="container mx-auto px-4 py-8 text-center">
+                <h1 className="text-2xl font-bold text-red-500">Lỗi</h1>
+                <p>Không thể tải dữ liệu từ máy chủ. Vui lòng thử lại sau.</p>
+            </div>
+        );
+    }
 
-  const newComics = Array.isArray(data?.comics) ? data.comics : [];
-  const paginationInfo = data?.pagination;
+    const { recommendedMangas, latestMangas } = homeData;
 
-  return (
-    <section>
-      <h1 className="text-2xl font-bold text-white mb-6 border-l-4 border-red-500 pl-4">
-        Truyện Mới Cập Nhật
-      </h1>
+    // Chuyển đổi kiểu dữ liệu để phù hợp với MangaCard
+    const toMangaCardProps = (manga: Manga) => ({
+        title: manga.name,
+        slug: manga.slug,
+        cover: manga.thumb_url,
+        latestChapter: manga.chaptersLatest?.[0]?.chapter_name ? `Chapter ${manga.chaptersLatest[0].chapter_name}` : 'N/A',
+    });
 
-      {newComics.length === 0 ? (
-        <div className="text-center text-gray-400 py-10">
-          <p>Không tìm thấy truyện nào.</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8">
-            {newComics.map((comic) => (
-              <MangaCard key={comic._id} comic={comic} />
-            ))}
-          </div>
+    return (
+        <main className="container mx-auto px-4 py-8">
+            <section className="mb-12">
+                <h2 className="text-3xl font-bold mb-6 border-l-4 border-blue-500 pl-4">
+                    Truyện Đề Cử
+                </h2>
+                {recommendedMangas.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {recommendedMangas.map((manga) => (
+                            <MangaCard key={manga.slug} manga={toMangaCardProps(manga)} />
+                        ))}
+                    </div>
+                ) : (
+                    <p>Không có truyện đề cử nào.</p>
+                )}
+            </section>
 
-          {paginationInfo && <Pagination pagination={paginationInfo} />}
-        </>
-      )}
-    </section>
-  );
+            <section>
+                <h2 className="text-3xl font-bold mb-6 border-l-4 border-green-500 pl-4">
+                    Mới Cập Nhật
+                </h2>
+                {latestMangas.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {latestMangas.map((manga) => (
+                            <MangaCard key={manga.slug} manga={toMangaCardProps(manga)} />
+                        ))}
+                    </div>
+                ) : (
+                    <p>Không có truyện nào mới được cập nhật.</p>
+                )}
+            </section>
+        </main>
+    );
 }

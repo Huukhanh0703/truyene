@@ -1,91 +1,101 @@
-import { getComicDetail } from '@/lib/api';
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Book, Clock, Rss, User } from 'lucide-react';
+import { getMangaDetail } from "@/lib/api";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { ChapterData } from "@/lib/types";
 
-export default async function ComicDetailPage({ params }: { params: { slug: string } }) {
-  const comic = await getComicDetail(params.slug);
+type Props = {
+    params: { slug: string };
+};
 
-  if (!comic) {
-    return notFound();
-  }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const manga = await getMangaDetail(params.slug);
+    if (!manga) {
+        return { title: "Không tìm thấy truyện" };
+    }
+    return {
+        title: manga.name,
+        description: manga.content,
+    };
+}
 
-  // Domain của CDN chứa ảnh
-  const cdnImage = "https://img.otruyenapi.com";
-  const chapters = comic.chapters[0]?.server_data || [];
-  const firstChapter = chapters[0];
-  const latestChapter = chapters[chapters.length - 1];
+export default async function MangaDetailPage({ params }: Props) {
+    const manga = await getMangaDetail(params.slug);
 
-  // ================================================================
-  // SỬA LỖI Ở ĐÂY: Tạo URL ảnh bìa hoàn chỉnh
-  // ================================================================
-  const imageUrl = `${cdnImage}/uploads/comics/${comic.thumb_url}`;
+    if (!manga) {
+        return (
+            <div className="container mx-auto px-4 py-8 text-center">
+                <h1 className="text-2xl font-bold">Không Tìm Thấy Truyện</h1>
+                <p>Truyện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+                <Link href="/" className="text-blue-500 hover:underline mt-4 inline-block">
+                    Quay về trang chủ
+                </Link>
+            </div>
+        );
+    }
 
-  return (
-    <div className="space-y-12">
-      {/* PHẦN THÔNG TIN TRUYỆN */}
-      <section className="flex flex-col md:flex-row gap-8">
-        {/* Ảnh bìa */}
-        <div className="w-full md:w-1/4 flex-shrink-0">
-          <Image
-            src={imageUrl} // <-- SỬ DỤNG URL ĐÃ SỬA
-            alt={comic.name}
-            width={300}
-            height={450}
-            className="w-full h-auto object-cover rounded-lg shadow-lg"
-            unoptimized={true} // <-- THÊM THUỘC TÍNH NÀY
-          />
-        </div>
+    // Gộp tất cả các chương từ các server lại và sắp xếp
+    const allChapters: ChapterData[] = manga.chapters
+        .flatMap(server => server.server_data)
+        .sort((a, b) => parseFloat(b.chapter_name) - parseFloat(a.chapter_name));
 
-        {/* Thông tin chi tiết */}
-        <div className="w-full md:w-3/4 space-y-4">
-          <h1 className="text-3xl font-bold text-white">{comic.name}</h1>
-          <div className="flex flex-wrap gap-2">
-            {comic.category.map(cat => (
-              <span key={cat.id} className="px-3 py-1 bg-gray-700 text-xs text-gray-200 rounded-full">{cat.name}</span>
-            ))}
-          </div>
-          <div className="flex flex-col space-y-2 text-sm text-gray-300">
-            <div className="flex items-center gap-2"><User size={16} /> Tác giả: <span className="text-white">{comic.author[0]}</span></div>
-            <div className="flex items-center gap-2"><Rss size={16} /> Tình trạng: <span className="text-white">{comic.status === 'ongoing' ? 'Đang tiến hành' : 'Hoàn thành'}</span></div>
-            <div className="flex items-center gap-2"><Clock size={16} /> Lượt xem: <span className="text-white">1,234,567</span></div>
-          </div>
-          <div className="flex gap-4 pt-4">
-            {firstChapter && (
-              <Link href={`/doc-truyen/${comic.slug}/${firstChapter.chapter_api_data.split('/').pop()}`} className="px-6 py-2 bg-red-600 rounded-md font-semibold hover:bg-red-700 transition-colors">
-                Đọc từ đầu
-              </Link>
-            )}
-            {latestChapter && (
-              <Link href={`/doc-truyen/${comic.slug}/${latestChapter.chapter_api_data.split('/').pop()}`} className="px-6 py-2 bg-gray-600 rounded-md font-semibold hover:bg-gray-700 transition-colors">
-                Đọc mới nhất
-              </Link>
-            )}
-          </div>
-        </div>
-      </section>
 
-      {/* MÔ TẢ & DANH SÁCH CHƯƠNG */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold border-b-2 border-gray-700 pb-2 mb-4">Giới thiệu</h2>
-            <div className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: comic.content }} />
-        </div>
-        <div className="lg:col-span-1">
-            <h2 className="text-xl font-bold border-b-2 border-gray-700 pb-2 mb-4">Danh sách chương</h2>
-            <div className="max-h-96 overflow-y-auto bg-gray-800/50 p-2 rounded-lg space-y-1">
-              {chapters.slice().reverse().map((chap) => {
-                const chapterId = chap.chapter_api_data.split('/').pop();
-                return (
-                  <Link key={chapterId} href={`/doc-truyen/${comic.slug}/${chapterId}`} className="block p-3 rounded-md text-sm text-gray-200 border-b border-gray-700/50 hover:bg-gray-700 transition-colors">
-                    Chapter {chap.chapter_name}
-                  </Link>
-                )
-              })}
+    return (
+        <div className="container mx-auto px-4 py-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="md:col-span-1">
+                    <Image
+                        src={manga.thumb_url}
+                        alt={manga.name}
+                        width={300}
+                        height={450}
+                        className="rounded-lg shadow-lg w-full"
+                    />
+                </div>
+                <div className="md:col-span-3">
+                    <h1 className="text-4xl font-bold mb-2">{manga.name}</h1>
+                    <p className="text-lg text-gray-400 mb-4">{manga.origin_name.join(', ')}</p>
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                        <p><strong>Tác giả:</strong> {manga.author.join(', ') || "Đang cập nhật"}</p>
+                        <p><strong>Tình trạng:</strong> {manga.status || "Đang cập nhật"}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {manga.category.map((genre) => (
+                            <Link
+                                href={`/the-loai/${genre.slug}`}
+                                key={genre.slug}
+                                className="px-3 py-1 bg-gray-200 text-gray-800 rounded-full text-sm hover:bg-gray-300"
+                            >
+                                {genre.name}
+                            </Link>
+                        ))}
+                    </div>
+                    <h2 className="text-xl font-semibold mb-2">Nội dung</h2>
+                    <p className="text-gray-700 mb-6">{manga.content}</p>
+                </div>
+            </div>
+
+            <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-4">Danh sách chương</h2>
+                <div className="max-h-96 overflow-y-auto border rounded-lg">
+                    <ul className="divide-y">
+                        {allChapters.length > 0 ? (
+                             allChapters.map((chapter) => (
+                                <li key={chapter.chapter_name}>
+                                    <Link
+                                        href={`/doc-truyen/${params.slug}/${chapter.chapter_name}`}
+                                        className="block px-4 py-3 hover:bg-gray-100 transition-colors"
+                                    >
+                                        Chapter {chapter.chapter_name} {chapter.chapter_title && `- ${chapter.chapter_title}`}
+                                    </Link>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="px-4 py-3 text-gray-500">Chưa có chương nào.</li>
+                        )}
+                    </ul>
+                </div>
             </div>
         </div>
-      </section>
-    </div>
-  );
+    );
 }
