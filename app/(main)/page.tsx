@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import RankingSidebar from "@/components/shared/RankingSidebar";
 import Image from "next/image";
+import React from "react";
 
 // Component loading cho các section
 const SectionSkeleton = () => (
@@ -126,7 +127,7 @@ const MangaSection = ({
 }: { 
     title: string; 
     mangas: Manga[]; 
-    icon: any; 
+    icon: React.ElementType; 
     viewAllLink?: string;
     showControls?: boolean;
 }) => {

@@ -6,10 +6,9 @@ import { usePathname, useSearchParams } from 'next/navigation';
 interface PaginationProps {
     currentPage: number;
     hasNextPage: boolean;
-    basePath: string;
 }
 
-export default function Pagination({ currentPage, hasNextPage, basePath }: PaginationProps) {
+export default function Pagination({ currentPage, hasNextPage }: PaginationProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 

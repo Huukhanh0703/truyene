@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Manga, Chapter, Genre, MangaDetail, ChapterContentData, ChapterData, ChapterImage } from "./types";
+import { Manga, Genre, MangaDetail, ChapterContentData, ChapterData, ChapterImage } from "./types";
 
 const API_BASE_URL = "https://otruyenapi.com/v1/api";
 const CDN_IMAGE_URL = "https://img.otruyenapi.com";

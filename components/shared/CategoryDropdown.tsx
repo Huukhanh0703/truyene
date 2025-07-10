@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // <-- IMPORT useRouter
 import { ChevronDown } from 'lucide-react';
 import { ALL_CATEGORIES } from '@/lib/constants';

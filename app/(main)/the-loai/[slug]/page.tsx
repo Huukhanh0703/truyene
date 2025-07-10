@@ -4,12 +4,7 @@ import Pagination from "@/components/shared/Pagination";
 import { notFound } from "next/navigation";
 import { Manga } from "@/lib/types";
 
-type Props = {
-    params: { slug: string };
-    searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default async function GenrePage({ params, searchParams }: Props) {
+export default async function Page({ params, searchParams }: { params: { slug: string }, searchParams?: { [key: string]: string | string[] | undefined } }) {
     const page = typeof searchParams?.page === 'string' ? Number(searchParams.page) : 1;
     const data = await getMangaByGenre(params.slug, page);
 
@@ -44,7 +39,6 @@ export default async function GenrePage({ params, searchParams }: Props) {
                     <Pagination
                         currentPage={currentPage}
                         hasNextPage={hasNextPage}
-                        basePath={`/the-loai/${params.slug}`}
                     />
                 </>
             ) : (
