@@ -2,12 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { getTopViewedMangas } from "@/lib/api";
 import Image from "next/image";
+import { Manga } from "@/lib/types";
 
 export default async function RankingSidebar() {
     const data = await getTopViewedMangas(1);
     // Lọc bỏ truyện 16+
-    const mangas = (data?.mangas.slice(0, 10) || []).filter((manga: any) =>
-        !(manga.category || []).some((cat: any) => cat.slug === "16" || cat.name === "16+")
+    const mangas: Manga[] = (data?.mangas.slice(0, 10) || []).filter((manga: Manga) =>
+        !(manga.category || []).some((cat) => cat.slug === "16" || cat.name === "16+")
     );
 
     return (

@@ -5,9 +5,10 @@ import { useState } from "react";
 import { Menu, X, Search, BookOpen } from "lucide-react";
 import GenreDropdown from "./GenreDropdown";
 import SearchBar from "./SearchBar";
+import { Genre } from "@/lib/types";
 
 interface HeaderProps {
-    genres: any[];
+    genres: Genre[];
 }
 
 export default function Header({ genres }: HeaderProps) {

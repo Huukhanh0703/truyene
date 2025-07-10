@@ -25,7 +25,7 @@ export default async function GenrePage({ params, searchParams }: Props) {
         cover: manga.thumb_url,
         latestChapter: manga.chaptersLatest?.[0]?.chapter_name ? `Chapter ${manga.chaptersLatest[0].chapter_name}` : 'N/A',
         status: manga.status,
-        rating: Number((Math.random() * 2 + 3).toFixed(2)),
+        rating: Number((Math.random() * 2 + 3).toFixed(1)),
         views: Math.floor(Math.random() * 100000) + 1000,
     });
 

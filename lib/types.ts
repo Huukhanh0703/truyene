@@ -15,10 +15,7 @@ export interface Manga {
         chapter_title: string;
         chapter_api_data: string;
     }[];
-<<<<<<< HEAD
-=======
     views?: number; // Thêm thuộc tính lượt xem
->>>>>>> 0da66b2 (update trang chủ)
 }
 
 // Định nghĩa cấu trúc cho một thể loại (Genre)

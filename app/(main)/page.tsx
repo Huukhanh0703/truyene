@@ -13,6 +13,7 @@ import {
     List
 } from "lucide-react";
 import RankingSidebar from "@/components/shared/RankingSidebar";
+import Image from "next/image";
 
 // Component loading cho các section
 const SectionSkeleton = () => (
@@ -35,10 +36,13 @@ const HeroSection = ({ featuredManga }: { featuredManga: Manga }) => (
     <section className="relative mb-12 overflow-hidden rounded-xl">
         <div className="relative h-64 md:h-96 lg:h-[500px]">
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent z-10"></div>
-            <img
+            <Image
                 src={featuredManga.thumb_url}
                 alt={featuredManga.name}
+                fill
                 className="w-full h-full object-cover"
+                priority
+                sizes="100vw"
             />
             <div className="absolute inset-0 z-20 flex items-center">
                 <div className="container mx-auto px-4">

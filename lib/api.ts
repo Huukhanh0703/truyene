@@ -1,11 +1,16 @@
 import axios from "axios";
-import { Manga, Chapter, Genre, MangaDetail, ChapterContentData, ChapterData } from "./types";
+import { Manga, Chapter, Genre, MangaDetail, ChapterContentData, ChapterData, ChapterImage } from "./types";
 
 const API_BASE_URL = "https://otruyenapi.com/v1/api";
 const CDN_IMAGE_URL = "https://img.otruyenapi.com";
 
-const handleApiError = (error: any, context: string) => {
-    console.error(`Lỗi API trong hàm '${context}':`, error.response?.data || error.message);
+const handleApiError = (error: unknown, context: string) => {
+    if (error && typeof error === 'object' && 'response' in error) {
+        // @ts-ignore
+        console.error(`Lỗi API trong hàm '${context}':`, error.response?.data || error.message);
+    } else {
+        console.error(`Lỗi API trong hàm '${context}':`, error);
+    }
     return null;
 };
 
@@ -82,7 +87,7 @@ export const getChapter = async (slug: string, chapterName: string) => {
         return {
             mangaSlug: slug,
             mangaDetail: mangaDetail,
-            chapterContent: { ...chapterContent.item, chapter_image: images as any },
+            chapterContent: { ...chapterContent.item, chapter_image: images as ChapterImage[] },
             currentChapterName: chapterName,
         };
     } catch (error) {
