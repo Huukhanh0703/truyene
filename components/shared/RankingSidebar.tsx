@@ -5,7 +5,10 @@ import Image from "next/image";
 
 export default async function RankingSidebar() {
     const data = await getTopViewedMangas(1);
-    const mangas = data?.mangas.slice(0, 10) || [];
+    // Lọc bỏ truyện 16+
+    const mangas = (data?.mangas.slice(0, 10) || []).filter((manga: any) =>
+        !(manga.category || []).some((cat: any) => cat.slug === "16" || cat.name === "16+")
+    );
 
     return (
         <aside
@@ -13,7 +16,7 @@ export default async function RankingSidebar() {
         >
             <h2 className="text-xl font-bold text-white mb-4">🔥 Bảng Xếp Hạng Lượt Xem</h2>
             <ol className="space-y-3">
-                {mangas.map((manga, idx) => (
+                {mangas.map((manga: any, idx: number) => (
                     <li
                         key={manga.slug}
                         className="flex items-center gap-3 bg-gray-800 rounded-lg p-2 hover:bg-gray-700 transition-colors min-h-[56px]"

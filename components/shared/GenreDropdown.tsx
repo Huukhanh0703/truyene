@@ -13,12 +13,9 @@ export default function GenreDropdown({ genres }: GenreDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-<<<<<<< HEAD
-=======
     // Lọc bỏ thể loại 16+
     const filteredGenres = genres.filter(genre => genre.slug !== "16" && genre.name !== "16+");
 
->>>>>>> 0da66b2 (update trang chủ)
     // Xử lý việc click ra ngoài để đóng menu
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -52,11 +49,7 @@ export default function GenreDropdown({ genres }: GenreDropdownProps) {
                 <div className="absolute top-full mt-2 w-80 max-h-96 overflow-y-auto bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-20">
                     <div className="grid grid-cols-2 gap-1 p-2">
                         {/* Lặp qua danh sách thể loại để tạo link */}
-<<<<<<< HEAD
-                        {genres.map((genre) => (
-=======
                         {filteredGenres.map((genre) => (
->>>>>>> 0da66b2 (update trang chủ)
                             <Link
                                 key={genre.slug}
                                 href={`/the-loai/${genre.slug}`}

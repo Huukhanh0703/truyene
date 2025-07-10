@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-<<<<<<< HEAD
-=======
 import { Eye, Star } from "lucide-react";
->>>>>>> 0da66b2 (update trang chủ)
 
 /**
  * Định nghĩa kiểu cho các thuộc tính (props) mà MangaCard nhận vào.
@@ -17,12 +14,9 @@ interface MangaCardProps {
         slug: string;
         cover: string;
         latestChapter: string;
-<<<<<<< HEAD
-=======
         status?: string;
         rating?: number;
         views?: number;
->>>>>>> 0da66b2 (update trang chủ)
     };
 }
 
@@ -39,38 +33,18 @@ const MangaCard = ({ manga }: MangaCardProps) => {
     return (
         <Link href={`/truyen/${manga.slug}`} className="group block">
             {/* Container cho ảnh bìa */}
-<<<<<<< HEAD
-            <div className="relative w-full overflow-hidden rounded-md bg-gray-700 aspect-[2/3]">
-=======
             <div className="relative w-full overflow-hidden rounded-lg bg-gray-700 aspect-[2/3] shadow-lg">
->>>>>>> 0da66b2 (update trang chủ)
                 <Image
                     src={manga.cover}
                     alt={manga.title}
                     fill // Lấp đầy container
-<<<<<<< HEAD
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16.6vw" // Tối ưu hóa ảnh cho các kích thước màn hình
-                    className="object-cover object-center transition-transform duration-300 group-hover:scale-110"
-=======
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16.6vw" // Tối ưu hóa ảnh cho các kích thước màn hình
                     className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
->>>>>>> 0da66b2 (update trang chủ)
                     // Xử lý trong trường hợp ảnh không tải được
                     onError={(e) => {
                         e.currentTarget.src = 'https://placehold.co/200x300/1f2937/ffffff?text=Error';
                     }}
                 />
-<<<<<<< HEAD
-            </div>
-            {/* Thông tin truyện */}
-            <div className="mt-2">
-                <h3 className="text-sm font-semibold text-white truncate group-hover:text-blue-400" title={manga.title}>
-                    {manga.title}
-                </h3>
-                <p className="text-xs text-gray-400">
-                    {manga.latestChapter}
-                </p>
-=======
                 
                 {/* Overlay với thông tin bổ sung */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -115,7 +89,6 @@ const MangaCard = ({ manga }: MangaCardProps) => {
                         <span>{manga.views.toLocaleString()}</span>
                     </div>
                 )}
->>>>>>> 0da66b2 (update trang chủ)
             </div>
         </Link>
     );

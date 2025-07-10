@@ -149,24 +149,17 @@ export const searchManga = async (query: string, page: number = 1): Promise<{ ma
     } catch (error) {
         return handleApiError(error, `searchManga (query: ${query})`);
     }
-<<<<<<< HEAD
-=======
 };
 
 export const getTopViewedMangas = async (page: number = 1): Promise<{ mangas: Manga[], currentPage: number, hasNextPage: boolean } | null> => {
     try {
         const { data } = await axios.get(`${API_BASE_URL}/danh-sach/truyen-hot?page=${page}`);
         if (data.status === "success" && data.data.items) {
-            const mangas: Manga[] = data.data.items.map((item: any) => {
-                // Debug: log ra để xem API trả về gì
-                console.log('API item:', item);
-                return {
-                    ...item,
-                    thumb_url: getFullImageUrl(item.thumb_url),
-                    // Map đúng thuộc tính views từ API
-                    views: item.views ?? item.view ?? item.total_views ?? item.view_count ?? Math.floor(Math.random() * 100000) + 1000
-                };
-            });
+            const mangas: Manga[] = data.data.items.map((item: any) => ({
+                ...item,
+                thumb_url: getFullImageUrl(item.thumb_url),
+                views: item.views ?? item.view ?? item.total_views ?? item.view_count ?? Math.floor(Math.random() * 100000) + 1000
+            }));
             const hasNextPage = mangas.length === 24;
             return {
                 mangas,
@@ -178,5 +171,4 @@ export const getTopViewedMangas = async (page: number = 1): Promise<{ mangas: Ma
     } catch (error) {
         return handleApiError(error, `getTopViewedMangas (page: ${page})`);
     }
->>>>>>> 0da66b2 (update trang chủ)
 };
