@@ -1,18 +1,23 @@
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import BackToTop from '@/components/shared/BackToTop';
+import { getGenre } from '@/lib/api';
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const genres = await getGenre();
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
+    <div className="flex flex-col min-h-screen bg-gray-900">
+      <Header genres={genres} />
+      <div className="flex-grow">
         {children}
-      </main>
+      </div>
       <Footer />
+      <BackToTop />
     </div>
   );
 }

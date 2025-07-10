@@ -1,4 +1,4 @@
-import { searchComics } from "@/lib/api";
+import { searchManga } from "@/lib/api";
 import MangaCard from "@/components/shared/MangaCard";
 import { Suspense } from 'react';
 
@@ -32,9 +32,10 @@ async function SearchResults({ keyword }: { keyword: string }) {
     return <div className="text-center text-gray-400 py-10">Vui lòng nhập từ khóa để tìm kiếm.</div>;
   }
 
-  const results = await searchComics(keyword);
+  const results = await searchManga(keyword);
+  const mangas = results?.mangas || [];
 
-  if (results.length === 0) {
+  if (mangas.length === 0) {
     return (
       <div className="text-center text-gray-400 py-10">
         <p>Không tìm thấy truyện nào khớp với từ khóa của bạn.</p>
@@ -44,9 +45,16 @@ async function SearchResults({ keyword }: { keyword: string }) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8">
-      {/* Sửa lỗi: Thêm key={comic._id} vào đây */}
-      {results.map((comic) => (
-        <MangaCard key={comic._id} comic={comic} />
+      {mangas.map((manga) => (
+        <MangaCard key={manga._id} manga={{
+          title: manga.name,
+          slug: manga.slug,
+          cover: manga.thumb_url,
+          latestChapter: manga.chaptersLatest?.[0]?.chapter_name ? `Chapter ${manga.chaptersLatest[0].chapter_name}` : 'N/A',
+          status: manga.status,
+          rating: Math.random() * 2 + 3,
+          views: Math.floor(Math.random() * 100000) + 1000,
+        }} />
       ))}
     </div>
   );

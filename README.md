@@ -1,36 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TruyenKK - Nền tảng đọc truyện tranh trực tuyến
 
-## Getting Started
+Một ứng dụng web hiện đại để đọc truyện tranh với giao diện đẹp mắt và trải nghiệm người dùng tối ưu.
 
-First, run the development server:
+## ✨ Tính năng chính
 
+### 🏠 Trang chủ mới
+- **Hero Section**: Hiển thị truyện nổi bật với giao diện đẹp mắt
+- **Thống kê nhanh**: Số liệu về truyện, chương, thể loại và độc giả
+- **Điều hướng thể loại**: Grid layout với 12 thể loại phổ biến
+- **Các danh mục truyện**:
+  - Truyện đề cử (với controls tìm kiếm và lọc)
+  - Mới cập nhật
+  - Truyện phổ biến
+  - Truyện hoàn thành
+- **Call-to-action**: Khuyến khích người dùng khám phá
+
+### 📱 Responsive Design
+- Tối ưu hóa cho cả PC và điện thoại
+- Mobile menu với navigation đầy đủ
+- Grid layout thích ứng theo kích thước màn hình
+- Touch-friendly controls
+
+### 🎨 Giao diện hiện đại
+- Dark theme với gradient và shadow
+- Hover effects và animations mượt mà
+- Loading states và skeleton screens
+- Back-to-top button
+- Enhanced manga cards với overlay information
+
+### 🔗 Tích hợp hoàn chỉnh
+- Kết nối với tất cả các trang hiện có
+- Navigation thống nhất
+- Search functionality
+- Genre filtering
+
+## 🚀 Cách chạy dự án
+
+1. **Cài đặt dependencies**:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Chạy development server**:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Mở trình duyệt**:
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Cấu trúc dự án
 
-## Learn More
+```
+mangaviet-app/
+├── app/
+│   ├── (main)/
+│   │   ├── layout.tsx          # Layout chính với Header, Footer
+│   │   └── page.tsx            # Trang chủ mới
+│   ├── doc-truyen/             # Trang đọc truyện
+│   ├── the-loai/               # Trang thể loại
+│   ├── tim-kiem/               # Trang tìm kiếm
+│   └── truyen/                 # Trang chi tiết truyện
+├── components/
+│   ├── shared/
+│   │   ├── Header.tsx          # Header với mobile menu
+│   │   ├── Footer.tsx          # Footer đầy đủ thông tin
+│   │   ├── MangaCard.tsx       # Card truyện nâng cao
+│   │   ├── BackToTop.tsx       # Nút cuộn lên đầu
+│   │   ├── LoadingSpinner.tsx  # Component loading
+│   │   └── ...                 # Các component khác
+│   └── features/
+│       └── reader/             # Components cho reader
+├── lib/
+│   ├── api.ts                  # API functions
+│   ├── types.ts                # TypeScript types
+│   └── constants.ts            # Constants
+└── ...
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Các tính năng nổi bật
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Trang chủ
+- **Hero Section**: Truyện nổi bật với gradient overlay
+- **Quick Stats**: Thống kê ấn tượng
+- **Category Grid**: 12 thể loại phổ biến
+- **Manga Sections**: 4 danh mục chính
+- **Responsive Grid**: Từ 2 cột (mobile) đến 8 cột (desktop)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Header
+- **Mobile Menu**: Hamburger menu với đầy đủ navigation
+- **Search Integration**: Tìm kiếm nhanh
+- **Genre Dropdown**: Danh sách thể loại
+- **Sticky Navigation**: Luôn hiển thị khi scroll
 
-## Deploy on Vercel
+### MangaCard
+- **Enhanced Design**: Shadow, rounded corners
+- **Hover Effects**: Scale và overlay information
+- **Status Badges**: Hoàn thành/Đang tiến hành
+- **Rating Display**: Star rating system
+- **View Count**: Số lượt xem
+- **New Chapter Badge**: Đánh dấu chapter mới
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Footer
+- **4 Column Layout**: Brand, Quick Links, Genres, Support
+- **Social Links**: GitHub, Email
+- **Legal Links**: Terms, Privacy, DMCA
+- **Responsive Design**: Stack trên mobile
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Công nghệ sử dụng
+
+- **Next.js 15**: React framework với App Router
+- **TypeScript**: Type safety
+- **Tailwind CSS**: Utility-first CSS framework
+- **Lucide React**: Icon library
+- **Axios**: HTTP client
+- **Responsive Design**: Mobile-first approach
+
+## 📱 Responsive Breakpoints
+
+- **Mobile**: < 640px (2 cột grid)
+- **Tablet**: 640px - 768px (3 cột grid)
+- **Desktop**: 768px - 1024px (4-6 cột grid)
+- **Large Desktop**: > 1024px (6-8 cột grid)
+
+## 🎨 Design System
+
+### Colors
+- **Primary**: Blue (#3B82F6)
+- **Secondary**: Gray (#6B7280)
+- **Background**: Dark Gray (#111827)
+- **Surface**: Gray (#1F2937)
+- **Text**: White (#FFFFFF)
+
+### Components
+- **Buttons**: `.btn-primary`, `.btn-secondary`
+- **Cards**: `.card`
+- **Inputs**: `.input-field`
+- **Utilities**: `.line-clamp-2`, `.line-clamp-3`
+
+## 🔄 API Integration
+
+Trang chủ tích hợp với các API endpoints:
+- `getHome()`: Lấy truyện đề cử và mới cập nhật
+- `getGenre()`: Lấy danh sách thể loại
+- Tương thích với tất cả API hiện có
+
+## 🚀 Performance
+
+- **Lazy Loading**: Images với Next.js Image component
+- **Suspense**: Loading states cho các sections
+- **Optimized Images**: Responsive sizes và formats
+- **Smooth Scrolling**: CSS scroll-behavior
+- **Debounced Search**: Tối ưu tìm kiếm
+
+## 📈 SEO & Accessibility
+
+- **Semantic HTML**: Proper heading structure
+- **Alt Text**: Image descriptions
+- **ARIA Labels**: Screen reader support
+- **Meta Tags**: SEO optimization
+- **Keyboard Navigation**: Full keyboard support
+
+## 🤝 Contributing
+
+1. Fork dự án
+2. Tạo feature branch
+3. Commit changes
+4. Push to branch
+5. Tạo Pull Request
+
+## 📄 License
+
+Dự án này được tạo ra với mục đích học tập và giải trí.
+
+---
+
+**TruyenKK** - Nơi khám phá thế giới truyện tranh! 📚✨
