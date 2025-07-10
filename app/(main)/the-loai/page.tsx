@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { getMangaByGenre } from "@/lib/api"; // Đảm bảo import đúng tên hàm
 import MangaCard from "@/components/shared/MangaCard";
 import Pagination from "@/components/shared/Pagination";
@@ -51,7 +50,6 @@ export default async function GenrePage({ params, searchParams }: Props) {
             ) : (
                 <p>Không tìm thấy truyện nào thuộc thể loại này.</p>
             )}
-=======
 import { getGenre } from "@/lib/api";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
@@ -74,7 +72,7 @@ export default async function GenreListPage() {
                     </Link>
                 ))}
             </div>
->>>>>>> 0da66b2 (update trang chủ)
+ 0da66b2 (update trang chủ)
         </div>
     );
 }

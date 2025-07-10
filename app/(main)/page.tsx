@@ -134,7 +134,7 @@ const MangaSection = ({
             ? `Chapter ${manga.chaptersLatest[0].chapter_name}` 
             : 'N/A',
         status: manga.status,
-        rating: Math.random() * 2 + 3, // Giả lập rating từ 3-5
+        rating: Number((Math.random() * 2 + 3).toFixed(1)), // Làm tròn 1 số thập phân
         views: Math.floor(Math.random() * 100000) + 1000, // Giả lập lượt xem
     });
 
